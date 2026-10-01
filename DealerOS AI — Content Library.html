@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DealerOS AI — Content Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg: #FAFAF8;
+    --text: #16181D;
+    --muted: #5B6472;
+    --border: #DDE1DC;
+    --card: #ECEEEA;
+    --accent: #047857;
+    --accent-soft: #E3F3EC;
+    --sidebar-bg: #16181D;
+    --sidebar-text: #FAFAF8;
+    --sidebar-muted: #9CA3AF;
+    --sidebar-active: #202329;
+    --accent-dark: #34D399;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16181D;
+      --text: #FAFAF8;
+      --muted: #9CA3AF;
+      --border: #2E3238;
+      --card: #202329;
+      --accent: #34D399;
+      --accent-soft: #1C2B25;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181D;
+    --text: #FAFAF8;
+    --muted: #9CA3AF;
+    --border: #2E3238;
+    --card: #202329;
+    --accent: #34D399;
+    --accent-soft: #1C2B25;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .topbar {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: 16px 24px;
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .brand {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+    flex: 0 0 auto;
+  }
+  .brand .name {
+    font-family: 'Space Grotesk', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .brand .name span { color: var(--accent-dark); }
+  .brand .sub {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--sidebar-muted);
+    white-space: nowrap;
+  }
+  .menu-toggle { display: none; }
+  .menu-backdrop { display: none !important; }
+  nav.types { display: none; }
+  main {
+    flex: 1 1 auto;
+    padding: 56px 72px;
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .home-card {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 24px;
+  }
+  .home-card:hover { border-color: var(--accent); }
+  .home-card .num {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--sidebar-bg);
+    color: var(--accent-dark);
+    font-family: 'Space Grotesk', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .home-card .label {
+    font-family: 'Space Grotesk', Arial, sans-serif;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .back-link {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .back-link:hover { color: var(--accent); }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade 0.2s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-family: 'Space Grotesk', Arial, sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 28px;
+  }
+  h2 {
+    font-family: 'Space Grotesk', Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+  }
+  .panel p { line-height: 1.7; font-size: 17px; margin: 0 0 16px; color: var(--text); }
+  .panel p.muted { color: var(--muted); }
+  .panel ul, .panel ol { line-height: 1.7; font-size: 17px; padding-left: 22px; margin: 0 0 16px; }
+  .panel li { margin-bottom: 10px; }
+  .quote {
+    background: var(--card);
+    border-left: 3px solid var(--accent);
+    padding: 20px 24px;
+    border-radius: 8px;
+    font-size: 17px;
+    line-height: 1.7;
+    margin: 16px 0 20px;
+  }
+  .quote p { margin: 0 0 14px; }
+  .quote p:last-child { margin-bottom: 0; }
+  .step {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .step .arrow { color: var(--accent); flex: 0 0 auto; }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 16px;
+  }
+  .card .tier-name { font-family: 'Space Grotesk', Arial, sans-serif; font-weight: 700; font-size: 20px; margin: 0 0 4px; }
+  .card .tier-price { font-family: 'Space Grotesk', Arial, sans-serif; font-weight: 700; font-size: 17px; color: var(--accent); margin: 0 0 10px; }
+  .card.popular { border: 1px solid var(--accent); }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; }
+  .mobile-nav { display: none; }
+  @media (max-width: 860px) {
+    main { padding: 40px 24px; max-width: 100%; }
+    h1 { font-size: 30px; }
+    .home-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <button class="brand" id="brandHome" style="all: unset; cursor: pointer; display: flex; flex-direction: row; align-items: baseline; gap: 8px;">
+      <div class="name">Dealer<span>OS</span>&nbsp;AI</div>
+      <div class="sub">Content Library</div>
+    </button>
+  </header>
+  <main id="main"></main>
+</div>
+
+<script>
+var sections = [
+  {
+    id: "flow",
+    label: "Flow Charts & Custom Support",
+    title: "How DealerOS AI Works — And What Happens If You Need Something Custom",
+    eyebrow: "Flow Charts & Custom Support",
+    html: ''
+      + '<h2>The everyday flow</h2>'
+      + '<p>Here\u2019s what actually happens behind the scenes when you use DealerOS AI \u2014 no technical background needed.</p>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>You upload a document \u2014 an auction invoice, a bill of sale, whatever you\u2019ve got.</span></div>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>DealerOS AI reads it and pulls out the important stuff: the VIN, the vehicle, the price, and more.</span></div>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>It double-checks the VIN against official government records, so a bad scan never turns into an official mistake.</span></div>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>Once everything checks out, you\u2019ve got a clean, structured record for that vehicle.</span></div>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>From there, DealerOS AI can generate your paperwork \u2014 bills of sale, used vehicle records \u2014 automatically.</span></div>'
+      + '<p>That\u2019s it. One upload, and the rest happens on its own.</p>'
+      + '<h2>If you need something custom</h2>'
+      + '<p>Sometimes the out-of-the-box version isn\u2019t quite enough \u2014 maybe you want a custom website, or a feature built just for how your dealership works. Here\u2019s how that goes:</p>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>You tell us what you need.</span></div>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>Our team at Indraam looks at the request and figures out the right approach.</span></div>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>We build it or configure it for your dealership.</span></div>'
+      + '<div class="step"><span class="arrow">\u2192</span><span>You get it delivered \u2014 and if you\u2019re on the Elite plan, ongoing priority support comes with it.</span></div>'
+      + '<p>No guesswork. Just a clear path from \u201CI need this\u201D to \u201Cit\u2019s done.\u201D</p>'
+  },
+  {
+    id: "mission",
+    label: "Mission Statement",
+    title: "Why We Built DealerOS AI",
+    eyebrow: "Mission Statement",
+    html: ''
+      + '<p>Running a dealership shouldn\u2019t mean drowning in paperwork. That\u2019s really why DealerOS AI exists.</p>'
+      + '<p>Our mission is simple: take all that fragmented paperwork and scattered recordkeeping \u2014 the invoices, the files, the spreadsheets \u2014 and turn it into something structured, searchable, and easy to trust. So you can spend less time on admin work and more time actually selling cars.</p>'
+      + '<p>That shows up in concrete ways. Your profit and loss, for example, gets tracked automatically as you go \u2014 and you can pull it up or print it whenever you need it, instead of rebuilding it from spreadsheets at the end of the month. The same goes for the rest of the picture: every VIN gets verified against official records before it\u2019s trusted, every vehicle\u2019s margin gets tracked automatically from purchase to sale, and your full inventory stays visible in one place \u2014 so you\u2019re never guessing what\u2019s actually making you money.</p>'
+      + '<p>And we do it while keeping you squarely within the rules your regulators expect. DealerOS AI doesn\u2019t make decisions for you or replace your responsibility to follow applicable requirements \u2014 it just makes following them a whole lot easier.</p>'
+  },
+  {
+    id: "feature-benefits",
+    label: "Feature Benefits",
+    title: "What Each Feature Actually Does For You",
+    eyebrow: "Feature Benefits",
+    html: ''
+      + '<p>You don\u2019t need to know how the technology works \u2014 you just need to know what it does for your day. Here\u2019s the breakdown:</p>'
+      + '<ul>'
+      + '<li><strong>Upload a document, and it reads itself.</strong> No more typing the same invoice into three different systems.</li>'
+      + '<li><strong>Every VIN gets double-checked.</strong> So a bad scan or a typo doesn\u2019t turn into a real compliance headache down the road.</li>'
+      + '<li><strong>Your forms build themselves.</strong> Bills of sale and used vehicle records, generated straight from your verified data.</li>'
+      + '<li><strong>Your profit and loss stays visible, always.</strong> Tracked automatically as you go, and ready to pull up or print whenever you need it \u2014 no rebuilding it from spreadsheets.</li>'
+      + '<li><strong>Every vehicle has a full story.</strong> From the day you bought it to the day you sold it \u2014 cost, repairs, margin, all in one place.</li>'
+      + '<li><strong>Vehicle photos look professional, instantly.</strong> Snap a photo, and the background disappears \u2014 no photographer, no editing software.</li>'
+      + '<li><strong>One listing, everywhere at once.</strong> Post it once, and it shows up on Facebook, Instagram, TikTok, Craigslist, YouTube, Google, and your own website.</li>'
+      + '<li><strong>Your books stay in order.</strong> Expenses, customer records, and your compliance trail all live in the same system.</li>'
+      + '<li><strong>Running more than one location? No problem.</strong> Every dealership keeps its own data and staff, under one account.</li>'
+      + '<li><strong>We\u2019ll even tell you where a car will sell faster.</strong> If a vehicle\u2019s a better fit for a different lot, DealerOS AI can help you move it there.</li>'
+      + '</ul>'
+  },
+  {
+    id: "benefits",
+    label: "Benefits",
+    title: "Why Dealerships Choose DealerOS AI",
+    eyebrow: "Benefits",
+    html: ''
+      + '<p class="muted">The big picture, first:</p>'
+      + '<p><strong>You get your time back.</strong><br>Paperwork that used to eat up your week now takes minutes.</p>'
+      + '<p><strong>You stop worrying about costly mistakes.</strong><br>A wrong VIN on an official record is a real problem \u2014 DealerOS AI catches it before it becomes one.</p>'
+      + '<p><strong>You look like a bigger, more polished operation.</strong><br>Professional photos and listings everywhere, without hiring a marketing team.</p>'
+      + '<p><strong>You can grow without the chaos.</strong><br>Add a second or third location, and it\u2019s still just one system to manage.</p>'
+      + '<h2>Everything that adds up to those four</h2>'
+      + '<ul>'
+      + '<li>Upload a document, and it reads itself \u2014 no manual typing.</li>'
+      + '<li>Every VIN gets double-checked against official records before it\u2019s trusted.</li>'
+      + '<li>Your forms build themselves \u2014 bills of sale and used vehicle records, no retyping.</li>'
+      + '<li>Your profit and loss stays visible, always \u2014 tracked automatically and ready to print.</li>'
+      + '<li>Every vehicle has a full story \u2014 cost, repairs, sale price, and margin, all in one place.</li>'
+      + '<li>Vehicle photos look professional, instantly, with no photographer or editing software.</li>'
+      + '<li>One listing reaches every channel at once \u2014 Facebook, Instagram, TikTok, Craigslist, YouTube, Google, and your own website.</li>'
+      + '<li>Your books stay in order \u2014 expenses, customers, and your compliance trail, all in one system.</li>'
+      + '<li>Running more than one location is no problem \u2014 each dealership keeps its own data and staff.</li>'
+      + '<li>DealerOS AI can even point you to where a car is likely to sell faster.</li>'
+      + '</ul>'
+      + '<p>That\u2019s everything DealerOS AI gives you \u2014 all pointing at the same thing: less time on paperwork, fewer mistakes, and a dealership that runs like a bigger operation than it is.</p>'
+  },
+  {
+    id: "pitch",
+    label: "Elevator Pitch",
+    title: "The Elevator Pitch",
+    eyebrow: "Elevator Pitch",
+    html: ''
+      + '<p class="muted">If someone asks what DealerOS AI is, here\u2019s what you say. Short sentences. Easy to follow.</p>'
+      + '<div class="quote">'
+      + '<p>\u201CDealerOS AI is a platform for car dealerships. It reads your paperwork for you.</p>'
+      + '<p>Here\u2019s how it works. You upload a document \u2014 an invoice, a bill of sale, anything like that. The system reads it. It pulls out the VIN, the price, the buyer, the seller, and more.</p>'
+      + '<p>Then it checks the VIN. It makes sure the vehicle is real and the details are correct. This catches mistakes early, before they become real problems.</p>'
+      + '<p>Once everything checks out, DealerOS AI builds a clean record for that vehicle. It can even create your forms for you \u2014 bills of sale, used vehicle records. No retyping.</p>'
+      + '<p>But it does more than paperwork. It also handles your inventory, your sales, your customers, and your accounting. It can take your vehicle photos and make them look professional, too. And one listing from DealerOS AI can reach many places at once \u2014 Facebook, Instagram, your own website, and more.</p>'
+      + '<p>So it\u2019s one system. It follows a car from the day you buy it to the day you sell it. That\u2019s DealerOS AI.\u201D</p>'
+      + '</div>'
+      + '<p>That\u2019s the whole idea, said simply.</p>'
+  },
+  {
+    id: "company",
+    label: "Company Name",
+    title: "Who\u2019s Actually Behind This",
+    eyebrow: "Company Name",
+    html: ''
+      + '<p>Quick bit of context in case it ever comes up:</p>'
+      + '<p><strong>DealerOS AI</strong> is the platform \u2014 the actual software you use every day.</p>'
+      + '<p><strong>Indraam</strong> is the company that builds and runs it.</p>'
+      + '<p>So if you\u2019re signing a contract or looking something up officially, you\u2019ll see \u201CIndraam.\u201D If you\u2019re talking about the product itself \u2014 the dashboard, the features, the thing that reads your paperwork \u2014 that\u2019s DealerOS AI.</p>'
+  },
+  {
+    id: "pricing",
+    label: "Pricing",
+    title: "Pricing, Plain and Simple",
+    eyebrow: "Pricing",
+    html: ''
+      + '<p>DealerOS AI comes in three plans, so you can start where it makes sense and grow from there.</p>'
+      + '<div class="card"><p class="tier-name">Basic</p><p class="tier-price">$249/month</p><p style="margin:0">The essentials: your dashboard, inventory, sales tracking, customer records, documents, registry, and reports. A solid foundation if you\u2019re just getting started.</p></div>'
+      + '<div class="card popular"><span class="tag">Most Popular</span><p class="tier-name">Pro</p><p class="tier-price">$399/month</p><p style="margin:0">Everything in Basic, plus marketing tools, Photo Studio for your vehicle photos, AI-powered insights, messaging tools, expense tracking, and deeper reports.</p></div>'
+      + '<div class="card"><p class="tier-name">Elite</p><p class="tier-price">$599/month</p><p style="margin:0">Everything in Pro, plus full accounting, team management, an attendance log, our most advanced AI features, priority support, and more configuration options.</p></div>'
+      + '<h2>Need something extra?</h2>'
+      + '<ul>'
+      + '<li>A custom dealership website starts at <strong>$1,500</strong>, one-time.</li>'
+      + '<li>Custom development \u2014 if you need DealerOS AI built around your specific workflow \u2014 also starts at <strong>$1,500</strong>, one-time.</li>'
+      + '</ul>'
+  },
+  {
+    id: "demo",
+    label: "Demo",
+    title: "What You\u2019ll See In A Demo",
+    eyebrow: "Demo",
+    html: ''
+      + '<p>If you sit down for a DealerOS AI demo, here\u2019s roughly what you\u2019ll see, step by step:</p>'
+      + '<ol>'
+      + '<li>We\u2019ll upload a real document \u2014 an auction invoice or a bill of sale \u2014 just a photo or a scan.</li>'
+      + '<li>You\u2019ll watch it fill in the details on its own: VIN, vehicle, buyer, seller, price, odometer, date.</li>'
+      + '<li>We\u2019ll show the VIN getting checked against government records in real time \u2014 and what happens if something looks off.</li>'
+      + '<li>We\u2019ll generate an actual form \u2014 a bill of sale or used vehicle record \u2014 straight from that data. No retyping.</li>'
+      + '<li>We\u2019ll drop in a vehicle photo and show Photo Studio removing the background, right there in the browser.</li>'
+      + '<li>We\u2019ll pull up that vehicle\u2019s full record \u2014 cost, repairs, sale price, margin \u2014 all in one place.</li>'
+      + '<li>We\u2019ll show how one listing reaches multiple channels at once.</li>'
+      + '<li>And we\u2019ll wrap up with pricing, matched to what you just saw, so you know exactly what you\u2019d be paying for.</li>'
+      + '</ol>'
+  },
+  {
+    id: "future",
+    label: "Long-Term Benefits",
+    title: "The Long-Term Payoff",
+    eyebrow: "Long-Term Benefits",
+    html: ''
+      + '<p>DealerOS AI isn\u2019t just useful on day one \u2014 it keeps paying off the longer you use it. Here\u2019s how that plays out:</p>'
+      + '<p><strong>Your track record builds itself.</strong><br>Every vehicle you process adds to a structured, searchable history \u2014 acquisition, repairs, sale, margin. A year in, that\u2019s not just paperwork anymore; it\u2019s a real record you can lean on for audits, resale conversations, or just knowing your own numbers.</p>'
+      + '<p><strong>Your compliance stays clean as you grow.</strong><br>Because every VIN is checked and every record is structured from the start, there\u2019s no backlog of messy data to clean up later \u2014 even as you add staff, locations, or volume.</p>'
+      + '<p><strong>Your numbers get sharper.</strong><br>The more vehicles that flow through DealerOS AI, the clearer the patterns get \u2014 which vehicles, sources, or locations are actually making you money, instead of guessing from memory.</p>'
+      + '<p><strong>Forecasting gets smarter with more history.</strong><br>Demand forecasting works off your own inventory and sales data \u2014 so the longer you run on DealerOS AI, especially across multiple locations, the better it gets at knowing where a vehicle is likely to sell fastest.</p>'
+      + '<p><strong>Growing to new locations gets easier, not harder.</strong><br>Your first dealership is already running on a system that works. Adding a second or third means replicating something proven, not starting from scratch.</p>'
+      + '<p><strong>The time you save adds up.</strong><br>A few minutes saved per document doesn\u2019t feel like much on day one. Multiply that across a year of vehicles \u2014 and it keeps growing as your volume does.</p>'
+      + '<p>That\u2019s the real case for DealerOS AI: it\u2019s not just solving today\u2019s paperwork problem. It\u2019s compounding in value every month you keep using it.</p>'
+  }
+];
+
+var main = document.getElementById('main');
+
+var home = document.createElement('section');
+home.className = 'panel active';
+home.id = 'panel-home';
+home.innerHTML = '<p class="eyebrow">Content Library</p><h1>Pick a topic</h1><div class="home-grid" id="homeGrid"></div>';
+main.appendChild(home);
+
+var homeGrid = home.querySelector('#homeGrid');
+
+sections.forEach(function(s, i) {
+  var card = document.createElement('button');
+  card.className = 'home-card';
+  card.innerHTML = '<span class="num">' + (i + 1) + '</span><span class="label">' + s.label + '</span>';
+  card.addEventListener('click', function () { show(s.id); });
+  homeGrid.appendChild(card);
+
+  var panel = document.createElement('section');
+  panel.className = 'panel';
+  panel.id = 'panel-' + s.id;
+  panel.innerHTML = '<button class="back-link" data-back="1">\u2190 All topics</button><p class="eyebrow">' + s.eyebrow + '</p><h1>' + s.title + '</h1>' + s.html;
+  panel.querySelector('.back-link').addEventListener('click', showHome);
+  main.appendChild(panel);
+});
+
+function show(id) {
+  document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+  document.getElementById('panel-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showHome() {
+  document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('active'); });
+  document.getElementById('panel-home').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+document.getElementById('brandHome').addEventListener('click', showHome);
+</script>
+</body>
+</html>
